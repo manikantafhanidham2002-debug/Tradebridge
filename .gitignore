@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.tmp
+tradebridge.db-journal
+.DS_Store
+Thumbs.db
