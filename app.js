@@ -115,21 +115,25 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('heroExploreBtn')?.addEventListener('click', () => switchTab('explorer'));
   document.getElementById('viewAllEpcBtn')?.addEventListener('click', () => switchTab('explorer'));
 
-  // Contact Us Navigation
-  const scrollToContact = (e) => {
+  // AI Agent Navigation
+  const scrollToAgentSection = (e) => {
     if (e) e.preventDefault();
     if (state.currentTab !== 'home') {
       switchTab('home');
     }
-    const contactSec = document.getElementById('contactSection');
-    if (contactSec) {
+    const agentSec = document.getElementById('agentSection');
+    if (agentSec) {
       setTimeout(() => {
-        contactSec.scrollIntoView({ behavior: 'smooth' });
+        agentSec.scrollIntoView({ behavior: 'smooth' });
+        const input = document.getElementById('embeddedChatInput');
+        if (input) input.focus();
       }, 50);
     }
   };
-  document.getElementById('headerContactBtn')?.addEventListener('click', scrollToContact);
-  document.getElementById('footerContactLink')?.addEventListener('click', scrollToContact);
+  document.getElementById('headerAgentBtn')?.addEventListener('click', scrollToAgentSection);
+  document.getElementById('headerContactBtn')?.addEventListener('click', scrollToAgentSection);
+  document.getElementById('footerAgentLink')?.addEventListener('click', scrollToAgentSection);
+  document.getElementById('footerContactLink')?.addEventListener('click', scrollToAgentSection);
 
   // Footer tab links
   document.querySelectorAll('[data-footer-tab]').forEach(el => {
@@ -2030,55 +2034,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === videoModalBackdrop) closeVideoModal();
   });
 
-  /* ==========================================================================
-     13B. HOME CONTACT FORM & EXIM INQUIRY HANDLER
-     ========================================================================== */
-  const homeContactForm = document.getElementById('homeContactForm');
-  const contactFormStatus = document.getElementById('contactFormStatus');
-  const contactSubmitBtn = document.getElementById('contactSubmitBtn');
 
-  homeContactForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const fullName = document.getElementById('contactFullName')?.value.trim();
-    const org = document.getElementById('contactOrg')?.value.trim();
-    const email = document.getElementById('contactEmail')?.value.trim();
-    const phone = document.getElementById('contactPhone')?.value.trim();
-    const sector = document.getElementById('contactSector')?.value;
-    const message = document.getElementById('contactMessage')?.value.trim();
-
-    if (!fullName || !org || !email || !message) {
-      if (contactFormStatus) {
-        contactFormStatus.className = 'form-status-box error';
-        contactFormStatus.style.display = 'block';
-        contactFormStatus.innerHTML = '<strong>Incomplete Fields:</strong> Please provide your full name, organization, official email, and inquiry details.';
-      }
-      return;
-    }
-
-    const refId = 'TB-EXIM-' + Math.floor(100000 + Math.random() * 900000);
-
-    if (contactSubmitBtn) {
-      contactSubmitBtn.disabled = true;
-      contactSubmitBtn.innerHTML = '<span>Transmitting Inquiry...</span>';
-    }
-
-    setTimeout(() => {
-      if (contactFormStatus) {
-        contactFormStatus.className = 'form-status-box success';
-        contactFormStatus.style.display = 'block';
-        contactFormStatus.innerHTML = `
-          <strong>Inquiry Submitted to EXIM Advisory Desk!</strong><br />
-          Thank you, <b>${fullName}</b> (${org}). Your request regarding <em>${sector}</em> has been registered with Reference ID: <b>${refId}</b>.<br />
-          An institutional trade specialist will review your details and respond to <b>${email}</b> within 1 business day.
-        `;
-      }
-      homeContactForm.reset();
-      if (contactSubmitBtn) {
-        contactSubmitBtn.disabled = false;
-        contactSubmitBtn.innerHTML = '<span>Submit Another Inquiry</span>';
-      }
-    }, 600);
-  });
 
   /* ==========================================================================
      14. KEYBOARD SHORTCUTS

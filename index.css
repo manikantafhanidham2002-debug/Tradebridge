@@ -2840,6 +2840,60 @@ main {
   opacity: 1;
 }
 
+/* ==========================================================================
+   TRADEBRIDGE AI AGENT SECTION & EMBEDDED CARD
+   ========================================================================== */
+.agent-showcase-section {
+  padding: 70px 0 80px;
+  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+  border-top: 1px solid var(--border-subtle);
+  position: relative;
+}
+[data-theme="dark"] .agent-showcase-section {
+  background: linear-gradient(180deg, #022018 0%, #061a14 100%);
+}
+.agent-section-badge-wrap {
+  display: flex;
+  align-items: center;
+}
+.agent-live-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--emerald-700);
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+[data-theme="dark"] .agent-live-status-pill {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--emerald-300);
+}
+.embedded-agent-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08), 0 0 25px rgba(16, 185, 129, 0.1);
+  max-width: 920px;
+  margin: 0 auto;
+}
+[data-theme="dark"] .embedded-agent-card {
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4), 0 0 25px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+.embedded-chat-container {
+  display: flex;
+  flex-direction: column;
+}
+[data-theme="dark"] #embeddedChatHistory,
+[data-theme="dark"] #chatHistoryBox {
+  background: #061e17 !important;
+}
+
 .assistant-dialog {
   background: var(--bg-modal);
   border: 1px solid var(--border-subtle);
