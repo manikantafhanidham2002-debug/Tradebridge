@@ -77,51 +77,69 @@ class TradeBridgeRAGAgent:
 
     def answer_query(self, query):
         """Generates a grounded academic response to a user's EXIM query."""
-        results = self.search(query, top_k=2)
-        if not results:
+        q = (query or '').lower().strip()
+
+        # 1. Core Import and Export architecture
+        if any(x in q for x in ['import and export', 'import export', 'export and import', 'export import', 'what is export', 'what is import', 'start export', 'export procedure', 'export business']) or q in ['import', 'export']:
             return {
                 "type": "general",
-                "badge": "● VERIFIED DGFT TRADE INTELLIGENCE",
-                "title": "Export-Import Regulatory Framework (FTP 2023)",
-                "answer": "Indian commercial exports are regulated under the Foreign Trade Policy 2023 governed by DGFT. Mandatory registrations include an Importer-Exporter Code (IEC), AD Code registration on ICEGATE, and an RCMC from the relevant Export Promotion Council.",
+                "badge": "🌐 OFFICIAL DGFT & CBIC EXIM FRAMEWORK",
+                "title": "Import & Export in India: Regulatory Architecture & Step-by-Step Procedure",
+                "answer": "<strong>Import and Export in India</strong> is governed by the Foreign Trade (Development and Regulation) Act, 1992, administered by DGFT (Ministry of Commerce & Industry) and CBIC.<br><br><strong>Mandatory 6-Step Foundation:</strong><br>1. Business Entity & PAN<br>2. Current Bank Account & 14-digit AD Code<br>3. 10-digit Importer-Exporter Code (IEC) from DGFT<br>4. RCMC Registration with relevant EPC (e.g. APEDA, EEPC, FIEO)<br>5. ICEGATE EDI registration for Customs clearance<br>6. GST LUT (Letter of Undertaking) to export without upfront 18% IGST.<br><br><strong>Key Incentive Schemes (FTP 2023):</strong> RoDTEP/RoSCTL, Advance Authorisation, and EPCG Scheme.",
                 "sources": [
-                    {"title": "DGFT Official Portal", "url": "https://www.dgft.gov.in"},
-                    {"title": "CBIC ICEGATE Customs Portal", "url": "https://www.icegate.gov.in"}
+                    {"title": "DGFT Official Portal (FTP 2023)", "url": "https://www.dgft.gov.in"},
+                    {"title": "CBIC ICEGATE Customs Clearance", "url": "https://www.icegate.gov.in"},
+                    {"title": "Indian Trade Portal", "url": "https://www.indiantradeportal.in"}
                 ]
             }
 
-        top_doc = results[0]
-        if top_doc["type"] == "Case QA":
-            qa = top_doc["qa"]
-            c = top_doc["parent_case"]
+        # 2. Specific domain topics
+        if 'apeda' in q:
             return {
-                "type": "case_study",
-                "badge": "📋 JUDICIAL & ENFORCEMENT PRECEDENT",
-                "title": f"Case Study {c.get('number')}: {c.get('title')}",
-                "answer": f"<strong>{c.get('title')}</strong><br><br><strong>Question:</strong> {qa.get('q')}<br><br><strong>Analysis:</strong> {qa.get('a')}",
-                "sources": [
-                    {"title": ref.get("title", ""), "url": ref.get("url", "#")} for ref in c.get("references", [])[:2]
-                ]
+                "type": "council",
+                "badge": "🏛️ AGRICULTURAL & PROCESSED FOOD EXPORT DEVELOPMENT AUTHORITY",
+                "title": "APEDA Registration & Scheduled Products",
+                "answer": "<strong>APEDA</strong> is the statutory body under the Ministry of Commerce & Industry for agricultural and processed food exports. Exporters trading in fruits, vegetables, meat, poultry, dairy, confectionery, and basmati rice must secure an RCMC from APEDA.",
+                "sources": [{"title": "APEDA Portal", "url": "https://apeda.gov.in"}, {"title": "DGFT e-RCMC", "url": "https://www.dgft.gov.in"}]
             }
 
-        if top_doc["type"] == "Case Study":
-            raw_c = top_doc["raw"]
-            return {
-                "type": "case_study",
-                "badge": "📋 JUDICIAL & ENFORCEMENT PRECEDENT",
-                "title": f"Case Study {raw_c.get('number')}: {raw_c.get('title')}",
-                "answer": f"<strong>{raw_c.get('title')}</strong><br><span style='color:#94a3b8; font-size:0.85rem;'>{raw_c.get('subtitle')}</span><br><br><strong>Factual Context:</strong> {raw_c.get('entityContext')}<br><br><strong>Key Legal Finding:</strong> {raw_c.get('outcomeImpact')}",
-                "sources": [
-                    {"title": ref.get("title", ""), "url": ref.get("url", "#")} for ref in raw_c.get("references", [])[:2]
-                ]
-            }
+        # 3. Only match case studies if explicitly requested
+        is_case_query = any(w in q for w in ['case', 'study', 'precedent', 'zte', 'ranbaxy', 'sanction', 'ban', 'dispute', 'violation'])
+        if is_case_query:
+            results = self.search(query, top_k=2)
+            if results:
+                top_doc = results[0]
+                if top_doc["type"] == "Case QA":
+                    qa = top_doc["qa"]
+                    c = top_doc["parent_case"]
+                    return {
+                        "type": "case_study",
+                        "badge": "📋 JUDICIAL & ENFORCEMENT PRECEDENT",
+                        "title": f"Case Study {c.get('number')}: {c.get('title')}",
+                        "answer": f"<strong>{c.get('title')}</strong><br><br><strong>Question:</strong> {qa.get('q')}<br><br><strong>Analysis:</strong> {qa.get('a')}",
+                        "sources": [{"title": ref.get("title", ""), "url": ref.get("url", "#")} for ref in c.get("references", [])[:2]]
+                    }
 
+                if top_doc["type"] == "Case Study":
+                    raw_c = top_doc["raw"]
+                    return {
+                        "type": "case_study",
+                        "badge": "📋 JUDICIAL & ENFORCEMENT PRECEDENT",
+                        "title": f"Case Study {raw_c.get('number')}: {raw_c.get('title')}",
+                        "answer": f"<strong>{raw_c.get('title')}</strong><br><span style='color:#94a3b8; font-size:0.85rem;'>{raw_c.get('subtitle')}</span><br><br><strong>Factual Context:</strong> {raw_c.get('entityContext')}<br><br><strong>Key Legal Finding:</strong> {raw_c.get('outcomeImpact')}",
+                        "sources": [{"title": ref.get("title", ""), "url": ref.get("url", "#")} for ref in raw_c.get("references", [])[:2]]
+                    }
+
+        # 4. Standard EXIM Trade Intelligence fallback
         return {
             "type": "general",
-            "badge": "● VERIFIED TRADE INTELLIGENCE",
-            "title": top_doc.get("title"),
-            "answer": top_doc["content"][:400] + "...",
-            "sources": [{"title": top_doc["title"], "url": top_doc.get("url", "#")}]
+            "badge": "● VERIFIED DGFT TRADE INTELLIGENCE",
+            "title": "Export-Import Regulatory Framework (FTP 2023)",
+            "answer": "Commercial trade in India is regulated under the Foreign Trade Policy 2023 governed by DGFT and customs tariffs administered by CBIC. Key requirements include a 10-digit IEC, an AD Code registered on ICEGATE, and an RCMC from the designated Export Promotion Council.",
+            "sources": [
+                {"title": "DGFT Official Portal", "url": "https://www.dgft.gov.in"},
+                {"title": "CBIC ICEGATE Customs Portal", "url": "https://www.icegate.gov.in"}
+            ]
         }
 
 # Global singleton agent instance

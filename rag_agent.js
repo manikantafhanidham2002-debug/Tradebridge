@@ -204,43 +204,51 @@
       const topicMatches = this.resolveEximDomainTopics(q);
       if (topicMatches) return topicMatches;
 
-      // 2. Search Case Studies (15 Master Precedents)
-      const cases = data.caseStudies || [];
-      for (const cs of cases) {
-        const titleLower = (cs.title || '').toLowerCase();
-        const subtitleLower = (cs.subtitle || '').toLowerCase();
-        const entityLower = (cs.entityContext || '').toLowerCase();
-        const incidentLower = (cs.coreIncident || '').toLowerCase();
+      // 2. Search Case Studies (15 Master Precedents - ONLY when explicitly querying a case study or specific legal precedent)
+      const isCaseQuery = q.includes('case') || q.includes('study') || q.includes('precedent') ||
+                          q.includes('zte') || q.includes('ranbaxy') || q.includes('sanction') ||
+                          q.includes('ban') || q.includes('dispute') || q.includes('violation');
+      if (isCaseQuery) {
+        const cases = data.caseStudies || [];
+        for (const cs of cases) {
+          const titleLower = (cs.title || '').toLowerCase();
+          const subtitleLower = (cs.subtitle || '').toLowerCase();
+          const entityLower = (cs.entityContext || '').toLowerCase();
+          const incidentLower = (cs.coreIncident || '').toLowerCase();
 
-        const words = q.split(/\s+/).filter(w => w.length > 3);
-        const matched = words.some(w =>
-          titleLower.includes(w) || subtitleLower.includes(w) || entityLower.includes(w) || incidentLower.includes(w)
-        );
+          // Exclude generic trade stopwords from triggering false case matches
+          const genericWords = new Set(['export', 'exports', 'import', 'imports', 'trade', 'trading', 'goods', 'india', 'customs', 'order', 'bank', 'ship', 'port', 'policy', 'council']);
+          const words = q.split(/\s+/).filter(w => w.length > 3 && !genericWords.has(w));
 
-        if (matched || (cs.id && q.includes(cs.id)) || (cs.number && q.includes(`case ${cs.number}`))) {
-          const matchingQA = (cs.questionsAndAnswers || []).find(qa =>
-            qa.q.toLowerCase().includes(q) || words.some(w => qa.q.toLowerCase().includes(w))
-          );
+          const matched = (words.length > 0 && words.some(w =>
+            titleLower.includes(w) || subtitleLower.includes(w) || entityLower.includes(w) || incidentLower.includes(w)
+          )) || (cs.id && q.includes(cs.id)) || (cs.number && q.includes(`case ${cs.number}`));
 
-          const qaSnippet = matchingQA
-            ? `<div style="margin-top:12px; padding:12px 16px; background:rgba(6, 182, 212, 0.08); border-left:3px solid var(--cyan-500); border-radius:6px;">
-                 <strong style="color:var(--cyan-500); font-size:0.82rem; display:block; margin-bottom:4px;">Direct Analytical Analysis:</strong>
-                 <p style="font-size:0.9rem; color:var(--text-primary); margin:0;">${matchingQA.a}</p>
-               </div>`
-            : '';
+          if (matched) {
+            const matchingQA = (cs.questionsAndAnswers || []).find(qa =>
+              qa.q.toLowerCase().includes(q) || (words.length > 0 && words.some(w => qa.q.toLowerCase().includes(w)))
+            );
 
-          return {
-            type: 'case_study',
-            badge: '📋 JUDICIAL & ENFORCEMENT PRECEDENT',
-            badgeClass: 'badge-amber',
-            title: `Case Study ${cs.number}: ${cs.title}`,
-            answer: `<strong>${cs.title}</strong><br>
-                     <span style="color:var(--text-secondary); font-size:0.85rem;">${cs.subtitle}</span><br><br>
-                     <strong>Factual Context:</strong> ${cs.entityContext}<br><br>
-                     <strong>Enforcement Outcome & Ruling:</strong> ${cs.outcomeImpact}
-                     ${qaSnippet}`,
-            sources: (cs.references || []).map(r => ({ title: r.title, url: r.url }))
-          };
+            const qaSnippet = matchingQA
+              ? `<div style="margin-top:12px; padding:12px 16px; background:rgba(6, 182, 212, 0.08); border-left:3px solid var(--cyan-500); border-radius:6px;">
+                   <strong style="color:var(--cyan-500); font-size:0.82rem; display:block; margin-bottom:4px;">Direct Analytical Analysis:</strong>
+                   <p style="font-size:0.9rem; color:var(--text-primary); margin:0;">${matchingQA.a}</p>
+                 </div>`
+              : '';
+
+            return {
+              type: 'case_study',
+              badge: '📋 JUDICIAL & ENFORCEMENT PRECEDENT',
+              badgeClass: 'badge-amber',
+              title: `Case Study ${cs.number}: ${cs.title}`,
+              answer: `<strong>${cs.title}</strong><br>
+                       <span style="color:var(--text-secondary); font-size:0.85rem;">${cs.subtitle}</span><br><br>
+                       <strong>Factual Context:</strong> ${cs.entityContext}<br><br>
+                       <strong>Enforcement Outcome & Ruling:</strong> ${cs.outcomeImpact}
+                       ${qaSnippet}`,
+              sources: (cs.references || []).map(r => ({ title: r.title, url: r.url }))
+            };
+          }
         }
       }
 
@@ -325,6 +333,54 @@
      * Resolves high-frequency EXIM questions with deep technical precision
      */
     resolveEximDomainTopics(q) {
+      // Core: Import and Export in India (Master EXIM Architecture & Procedure)
+      if (
+        q.includes('import and export') ||
+        q.includes('import export') ||
+        q.includes('export and import') ||
+        q.includes('export import') ||
+        q.includes('what is export') ||
+        q.includes('what is import') ||
+        q.includes('how to export') ||
+        q.includes('start export') ||
+        q.includes('start an export') ||
+        q.includes('export procedure') ||
+        q.includes('export business') ||
+        q === 'import' ||
+        q === 'export'
+      ) {
+        return {
+          type: 'general',
+          badge: '🌐 OFFICIAL DGFT & CBIC EXIM FRAMEWORK',
+          badgeClass: 'badge-emerald',
+          title: 'Import & Export in India: Regulatory Architecture & Step-by-Step Procedure',
+          answer: `<strong>Import and Export in India</strong> is governed by the <strong>Foreign Trade (Development and Regulation) Act, 1992</strong>, administered by the <strong>Directorate General of Foreign Trade (DGFT)</strong> under the Ministry of Commerce & Industry, and enforced at all border gateway seaports, airports, and ICDs by the <strong>Central Board of Indirect Taxes and Customs (CBIC)</strong>.<br><br>
+                   <strong>1. Core Statutory Concepts:</strong><br>
+                   • <strong>Export:</strong> Taking goods or services out of India to an overseas territory. Under GST law (IGST Act Sec 16), exports are treated as <em>Zero-Rated Supplies</em>, entitling businesses to complete tax refunds or export under Letter of Undertaking (LUT).<br>
+                   • <strong>Import:</strong> Bringing goods or services into India from abroad, subject to Basic Customs Duty (BCD), Social Welfare Surcharge (SWS), and Integrated GST (IGST) assessed on the assessable CIF value.<br><br>
+                   <strong>2. Mandatory 6-Step Foundation to Start EXIM Operations:</strong><br>
+                   1. <strong>Business Entity & PAN:</strong> Register a Proprietorship, Partnership, LLP, or Pvt Ltd company and obtain an entity PAN.<br>
+                   2. <strong>Bank Account & AD Code:</strong> Open a Current Account in an Authorized Dealer (AD) Category-I bank branch and obtain a 14-digit <strong>AD Code</strong>.<br>
+                   3. <strong>Importer-Exporter Code (IEC):</strong> Obtain a 10-digit PAN-linked IEC via the DGFT portal (instant online issuance, mandatory for customs clearance).<br>
+                   4. <strong>RCMC Registration:</strong> Obtain a <strong>Registration-cum-Membership Certificate (RCMC)</strong> from your sector's Export Promotion Council (e.g. APEDA, EEPC, TEXPROCIL, FIEO) to access export incentives under the Foreign Trade Policy 2023.<br>
+                   5. <strong>ICEGATE Registration:</strong> Register your IEC, AD Code, and bank accounts on the CBIC ICEGATE EDI portal for electronic shipping bills and duty drawbacks.<br>
+                   6. <strong>GST Letter of Undertaking (LUT):</strong> File an online LUT on the GST portal to export without paying upfront 18% IGST.<br><br>
+                   <strong>3. Operational Shipping Clearance Flow:</strong><br>
+                   • <strong>For Exports:</strong> Buyer Contract & Incoterm agreed → Commercial Invoice & Packing List generated → Shipping Bill filed on ICEGATE → Customs LEO (Let Export Order) issued → Vessel boarded → Bank reconciles remittance via e-BRC on DGFT portal.<br>
+                   • <strong>For Imports:</strong> Bill of Lading received → Bill of Entry (BE) filed on ICEGATE → Customs assessment & duty payment → Customs OOC (Out of Charge) granted → Goods delivered.<br><br>
+                   <strong>4. Government Fiscal Export Benefit Schemes (FTP 2023):</strong><br>
+                   • <strong>RoDTEP / RoSCTL:</strong> Duty remission rebate for unrefunded central, state, and local taxes.<br>
+                   • <strong>Advance Authorisation:</strong> Duty-free import of raw materials incorporated into export products.<br>
+                   • <strong>EPCG Scheme:</strong> Zero customs duty import of capital machinery against export obligation.`,
+          sources: [
+            { title: 'DGFT Official Portal (Foreign Trade Policy 2023)', url: 'https://www.dgft.gov.in' },
+            { title: 'CBIC ICEGATE Customs Clearance', url: 'https://www.icegate.gov.in' },
+            { title: 'Indian Trade Portal (Tariffs & Trade Agreements)', url: 'https://www.indiantradeportal.in' },
+            { title: 'Federation of Indian Export Organisations (FIEO)', url: 'https://www.fieo.org' }
+          ]
+        };
+      }
+
       // APEDA question
       if (q.includes('apeda')) {
         return {

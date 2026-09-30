@@ -1149,6 +1149,12 @@ main {
   align-items: stretch;
 }
 
+.contact-grid.single-card-grid {
+  grid-template-columns: minmax(320px, 720px);
+  justify-content: center;
+  margin: 0 auto;
+}
+
 .contact-info-card {
   background: #ffffff;
   border: 1.5px solid var(--border-subtle);

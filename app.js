@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('heroExploreBtn')?.addEventListener('click', () => switchTab('explorer'));
   document.getElementById('viewAllEpcBtn')?.addEventListener('click', () => switchTab('explorer'));
 
-  // AI Agent Navigation
+  // AI Agent & Contact Navigation
   const scrollToAgentSection = (e) => {
     if (e) e.preventDefault();
     if (state.currentTab !== 'home') {
@@ -130,10 +130,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 50);
     }
   };
+
+  const scrollToContactSection = (e) => {
+    if (e) e.preventDefault();
+    if (state.currentTab !== 'home') {
+      switchTab('home');
+    }
+    const contactSec = document.getElementById('contactSection');
+    if (contactSec) {
+      setTimeout(() => {
+        contactSec.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+    }
+  };
+
   document.getElementById('headerAgentBtn')?.addEventListener('click', scrollToAgentSection);
-  document.getElementById('headerContactBtn')?.addEventListener('click', scrollToAgentSection);
+  document.getElementById('headerContactBtn')?.addEventListener('click', scrollToContactSection);
   document.getElementById('footerAgentLink')?.addEventListener('click', scrollToAgentSection);
-  document.getElementById('footerContactLink')?.addEventListener('click', scrollToAgentSection);
+  document.getElementById('footerContactLink')?.addEventListener('click', scrollToContactSection);
 
   // Footer tab links
   document.querySelectorAll('[data-footer-tab]').forEach(el => {
