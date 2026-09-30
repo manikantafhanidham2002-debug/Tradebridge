@@ -1683,6 +1683,139 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // =========================================================================
+  // QUIZ AUDIO + VISUAL CELEBRATION FEEDBACK
+  // =========================================================================
+  function playHurraySound() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+
+        // Cheerful major arpeggio fanfare (C5, E5, G5, C6) with sparkling decay
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+          const startTime = ctx.currentTime + idx * 0.07;
+          gain.gain.setValueAtTime(0.001, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.24, startTime + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.38);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + 0.40);
+        });
+      }
+
+      // Short cheerful vocal exclamation: "Hurray!"
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance('Hurray!');
+        utter.rate = 1.35;
+        utter.pitch = 1.5;
+        utter.volume = 1.0;
+        window.speechSynthesis.speak(utter);
+      }
+    } catch (e) {
+      console.warn('Audio celebration error:', e);
+    }
+  }
+
+  function playOhNoSound() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+
+        // Playful descending tone
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.35);
+
+        gain.gain.setValueAtTime(0.22, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.36);
+      }
+
+      // Short playful vocal exclamation: "Oh no!"
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance('Oh no!');
+        utter.rate = 1.25;
+        utter.pitch = 0.92;
+        utter.volume = 0.95;
+        window.speechSynthesis.speak(utter);
+      }
+    } catch (e) {
+      console.warn('Audio feedback error:', e);
+    }
+  }
+
+  function triggerQuizCelebration(anchorEl) {
+    try {
+      const overlay = document.createElement('div');
+      overlay.className = 'quiz-celebration-overlay';
+      document.body.appendChild(overlay);
+
+      const rect = anchorEl ? anchorEl.getBoundingClientRect() : null;
+      const originX = rect ? (rect.left + rect.width / 2) : (window.innerWidth / 2);
+      const originY = rect ? (rect.top + rect.height / 2) : (window.innerHeight / 2);
+
+      const emojis = ['🌸', '🌺', '🌼', '🌻', '🌷', '✨', '🎉', '🎊', '💐', '⭐'];
+      const colors = ['#10b981', '#06b6d4', '#f59e0b', '#ec4899', '#8b5cf6', '#3b82f6'];
+      const totalParticles = 32;
+
+      for (let i = 0; i < totalParticles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'celebration-item';
+
+        if (i % 2 === 0) {
+          particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          particle.style.fontSize = `${Math.floor(Math.random() * 16 + 18)}px`;
+        } else {
+          particle.style.width = `${Math.floor(Math.random() * 8 + 8)}px`;
+          particle.style.height = `${Math.floor(Math.random() * 12 + 8)}px`;
+          particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          particle.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+        }
+
+        const angle = (Math.PI * 2 * i) / totalParticles + (Math.random() - 0.5) * 0.4;
+        const distance = Math.floor(Math.random() * 160 + 90);
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance - Math.random() * 45;
+        const rot = `${Math.floor(Math.random() * 720 - 360)}deg`;
+
+        particle.style.left = `${originX}px`;
+        particle.style.top = `${originY}px`;
+        particle.style.setProperty('--tx', `${tx}px`);
+        particle.style.setProperty('--ty', `${ty}px`);
+        particle.style.setProperty('--rot', rot);
+        particle.style.animationDelay = `${Math.random() * 0.08}s`;
+
+        overlay.appendChild(particle);
+      }
+
+      setTimeout(() => {
+        overlay.remove();
+      }, 1400);
+    } catch (e) {
+      console.warn('Celebration animation error:', e);
+    }
+  }
+
   function renderCurrentQuiz() {
     const list = getLevelQuizzes();
     if (!list || list.length === 0) return;
@@ -1858,6 +1991,10 @@ document.addEventListener('DOMContentLoaded', () => {
           if (isCorrect) {
             state.quizScore++;
             if (quizScoreNumerator) quizScoreNumerator.textContent = state.quizScore;
+            playHurraySound();
+            triggerQuizCelebration(btn);
+          } else {
+            playOhNoSound();
           }
 
           // Mark options: Green for correct, Red for wrong

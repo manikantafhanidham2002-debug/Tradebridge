@@ -3922,3 +3922,40 @@ main {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   QUIZ CELEBRATION FEEDBACK (FLOWER & CONFETTI POPUP)
+   ========================================================================== */
+.quiz-celebration-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999999;
+  overflow: hidden;
+}
+
+.celebration-item {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+  animation: celebrationBurst 1.25s cubic-bezier(0.18, 0.9, 0.28, 1) forwards;
+}
+
+@keyframes celebrationBurst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.3) rotate(0deg);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(calc(var(--tx) * 0.65), calc(var(--ty) * 0.65)) scale(1.25) rotate(calc(var(--rot) * 0.5));
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.9) rotate(var(--rot));
+  }
+}

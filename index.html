@@ -76,17 +76,6 @@
           <svg id="themeSunIcon" style="display:none" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
         </button>
 
-        <!-- TradeBridge AI Agent Quick Button -->
-        <button class="header-contact-btn" id="headerAgentBtn" aria-label="Go to TradeBridge AI Agent">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4"></path><path d="M2 12h4"></path><path d="M12 22v-4"></path><path d="M22 12h-4"></path></svg>
-          <span>AI Agent</span>
-        </button>
-
-        <!-- Contact Us Quick Button -->
-        <button class="header-contact-btn" id="headerContactBtn" aria-label="Go to Contact Us">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-          <span>Contact</span>
-        </button>
 
         <!-- Ask TradeBridge AI Button -->
         <button class="ask-header-btn" id="openChatBtn" aria-label="Open Ask TradeBridge AI Assistant">
@@ -341,89 +330,6 @@
         </div>
       </section>
 
-      <!-- ====================================================================
-           TRADEBRIDGE AI AGENT SHOWCASE SECTION (SEPARATE INTERACTIVE SECTION)
-           ==================================================================== -->
-      <section class="agent-showcase-section" id="agentSection">
-        <div class="container">
-          <div class="section-header-row" style="margin-bottom: 24px;">
-            <div>
-              <p class="section-eyebrow"><span class="eyebrow-dot"></span> GOOGLE &amp; AUTHENTIC SOURCE GROUNDED INTELLIGENCE</p>
-              <h2 class="section-title">TradeBridge AI Agent. <em>Ask Any Export Question.</em></h2>
-              <p class="section-subtitle">
-                Synthesized intelligence from Google Search, official DGFT Foreign Trade Policy 2023, CBIC customs tariffs, 37 Export Promotion Councils, and 15 judicial case studies.
-              </p>
-            </div>
-            <div class="agent-section-badge-wrap">
-              <span class="agent-live-status-pill">
-                <span class="live-dot"></span> Google &amp; RAG Grounded Active
-              </span>
-            </div>
-          </div>
-
-          <!-- Embedded Agent Interface Card (matches Image 2) -->
-          <div class="embedded-agent-card">
-            <div class="assistant-header" style="border-radius: 16px 16px 0 0;">
-              <div class="assistant-title-group">
-                <div class="assistant-avatar" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4"></path><path d="M2 12h4"></path><path d="M12 22v-4"></path><path d="M22 12h-4"></path></svg>
-                </div>
-                <div>
-                  <h3 style="font-family:var(--font-heading); font-size:1.15rem; font-weight:700; color:#fff; margin:0;">TradeBridge AI Agent</h3>
-                  <span style="font-size:0.75rem; color:var(--emerald-400);">● Knowledge Base &amp; Google Search Grounding Active</span>
-                </div>
-              </div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span class="badge" style="background:rgba(255,255,255,0.18); color:#fff; font-size:0.75rem; padding:4px 10px; border-radius:20px;">Live Autonomous Agent</span>
-              </div>
-            </div>
-
-            <div class="embedded-chat-container">
-              <div class="chat-history" id="embeddedChatHistory" style="min-height: 380px; max-height: 520px; overflow-y: auto; background: #ffffff;">
-                <div class="chat-welcome" id="embeddedChatWelcome">
-                  <div style="width:52px; height:52px; border-radius:50%; background:rgba(6,182,212,0.1); display:flex; align-items:center; justify-content:center; margin:0 auto;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-600)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                  </div>
-                  <h3 style="font-size: 1.45rem; margin: 4px 0 2px; font-weight: 700;">A clearer path to global trade.</h3>
-                  <p style="color: var(--text-secondary); max-width: 520px; margin: 0 auto; font-size: 0.95rem;">
-                    Ask about an export promotion council, an Incoterm, trade finance, customs clearance, or current geopolitical disruptions.
-                  </p>
-                  <div class="suggestions-list" style="margin-top: 14px;">
-                    <button class="suggestion-btn" data-query="What is APEDA and who needs it?">
-                      <span>What is APEDA and who needs it?</span>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                    <button class="suggestion-btn" data-query="Which council supports engineering products?">
-                      <span>Which council supports engineering products?</span>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                    <button class="suggestion-btn" data-query="What is an HS Code and how is it structured?">
-                      <span>What is an HS Code and how is it structured?</span>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                    <button class="suggestion-btn" data-query="Explain Letter of Credit and how payment is secured">
-                      <span>Explain Letter of Credit and how payment is secured</span>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                    <button class="suggestion-btn" data-query="How does the Red Sea crisis affect Indian exporters?">
-                      <span>How does the Red Sea crisis affect Indian exporters?</span>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="assistant-input-bar" style="border-radius: 0 0 16px 16px;">
-                <input type="text" class="assistant-input" id="embeddedChatInput" placeholder="Ask any question about Indian exports..." aria-label="Type your trade question" />
-                <button class="btn-primary" id="embeddedChatSendBtn" style="padding:10px 22px;">
-                  <span>Send</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <!-- ====================================================================
            HOME SECTION: CONNECT & CONSULT (Official Trade Advisory Desk - Image 2)
